@@ -1,6 +1,6 @@
 # TankCombat
 
 A Tank Battle game versus another local player or AI opponent
+Built in Unreal 4.14
 
-## Commit List
-*TC01 Set up ReadMe file
+
