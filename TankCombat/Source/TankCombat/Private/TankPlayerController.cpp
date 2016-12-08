@@ -33,7 +33,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	FVector HitLocation; // OUT parameter
 	if (GetSightRayHitLocation(HitLocation)) // has "side-effect", going to line trace
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("LookDirection: %s"), *(HitLocation.ToString()));
+		
 		// TODO tell tank to aim at this point
 	}
 	
@@ -45,14 +45,55 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	int32 ViewportSizeX, ViewportSizeY;
 	GetViewportSize(ViewportSizeX, ViewportSizeY); // Sets using OUT parameters
 	auto ScreenLocation = FVector2D(ViewportSizeX*CrosshairXLocation, ViewportSizeY*CrosshairYLocation);
-	UE_LOG(LogTemp, Warning, TEXT("ScreenLocation: %s"), *(ScreenLocation.ToString()))
-
-	// "De-Project" the screen position of crosshair to world direction
-	// Linetrace along the look direction and see what we hit (within max range)
+	
+	FVector LookDirection;
+	if (GetLookDirection( ScreenLocation, LookDirection))
+	{
+		
+		// Linetrace along the look direction and see what we hit (within max range)
+		if (GetLookVectorHitLocation(LookDirection, HitLocation))
+		{
+			
+			UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *(HitLocation.ToString()));
+		}
+	}
+	
 	HitLocation = FVector(1.0);
 	return true;
 }
 
+bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const
+{
+	/// "De-Project" the screen position of crosshair to world direction
+	FVector CameraWorldLocation;
+	
+	return DeprojectScreenPositionToWorld(
+		ScreenLocation.X, 
+		ScreenLocation.Y, 
+		CameraWorldLocation, 
+		LookDirection);
+		
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const
+{
+	FHitResult HitResult;
+	auto StartLocation = PlayerCameraManager->GetCameraLocation();
+	auto EndLocation = StartLocation + (LookDirection*LineTraceRange);
+	if (GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartLocation,
+			EndLocation,
+			ECollisionChannel::ECC_Visibility
+			))
+	{
+		//set hit location
+		HitLocation = HitResult.Location;
+		return true;
+	}
+	//return false if no hit
+	return false;
+}
 ATank* ATankPlayerController::GetControlledTank() const
 {
 	return Cast<ATank>(GetPawn());
