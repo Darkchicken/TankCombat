@@ -13,7 +13,8 @@ class TANKCOMBAT_API UTankBarrel : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 public:
-	void Elevate(float DegreesPerSecond);
+	//-1 is max downward movement, +1 is max upward movement
+	void Elevate(float RelativeSpeed);
 
 private:
 	UPROPERTY(EditAnywhere, Category = Setup)
