@@ -29,7 +29,7 @@ void ATankAIController::Tick(float DeltaTime)
 		ControlledTank->Fire();
 		//TODO dont fire every frame
 	}
-	//UE_LOG(LogTemp, Warning, TEXT("Player Controller ticking"));
+	
 }
 
 
