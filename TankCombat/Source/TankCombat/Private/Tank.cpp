@@ -16,7 +16,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-ATank::BeginPlay()
+void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 }
