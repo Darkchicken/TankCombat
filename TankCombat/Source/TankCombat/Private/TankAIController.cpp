@@ -18,17 +18,16 @@ void ATankAIController::Tick(float DeltaTime)
 
 	auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	auto ControlledTank = Cast<ATank>(GetPawn());
-	if (PlayerTank)
+	if (ensure(PlayerTank))
 	{
-		// TODO move towards player
-		MoveToActor(PlayerTank, AcceptanceRadius);// TODO check radius is in cm
+		// move towards player
+		MoveToActor(PlayerTank, AcceptanceRadius);
 
 		// Aim Towards Player
 		ControlledTank->AimAt(PlayerTank->GetActorLocation());
 
 		// Fire if ready
 		ControlledTank->Fire();
-		//TODO dont fire every frame
 	}
 	
 }
