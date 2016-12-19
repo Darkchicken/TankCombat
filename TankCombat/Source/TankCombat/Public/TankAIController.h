@@ -13,7 +13,11 @@ class TANKCOMBAT_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 public:
-	
+
+protected:
+	//how close the AI tank can get to player before stopping
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float AcceptanceRadius = 8000.0f;
 
 private:	
 
@@ -21,8 +25,7 @@ private:
 
 	virtual void Tick(float DeltaTime) override;
 
-	//how close the AI tank can get to player before stopping
-	float AcceptanceRadius = 3000.0f;
+	
 	
 	
 };
