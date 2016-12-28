@@ -37,15 +37,6 @@ void AProjectile::BeginPlay()
 	CollisionMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 }
 
-// Called every frame tracks are in contact
-void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
-{
-	LaunchBlast->Deactivate();
-	ImpactBlast->Activate();
-
-	ExplosionForce->FireImpulse();
-}
 
 void AProjectile::LaunchProjectile(float Speed)
 {
@@ -53,4 +44,25 @@ void AProjectile::LaunchProjectile(float Speed)
 	ProjectileMovement->Activate();
 
 }
+
+// Called every frame tracks are in contact
+void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	LaunchBlast->Deactivate();
+	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
+
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+
+	FTimerHandle Timer;
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
+}
+
+void AProjectile::OnTimerExpire()
+{
+	Destroy();
+}
+
 
